@@ -19,6 +19,196 @@
         }
     ],
     "paths": {
+        "/api/v1/account/settings": {
+            "get": {
+                "tags": [
+                    "Account Settings"
+                ],
+                "summary": "Get current account settings",
+                "description": "Retrieves the account settings for the authenticated user",
+                "operationId": "getAccountSettings",
+                "responses": {
+                    "200": {
+                        "description": "Account settings retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account settings retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "default_privacy": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "private",
+                                                        "public"
+                                                    ],
+                                                    "example": "private"
+                                                },
+                                                "avatar_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/avatars/user_1.png",
+                                                    "nullable": true
+                                                },
+                                                "enable_watermark": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "watermark_position": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "top-left",
+                                                        "top-right",
+                                                        "bottom-left",
+                                                        "bottom-right"
+                                                    ],
+                                                    "example": "bottom-right",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Account Settings"
+                ],
+                "summary": "Update account settings",
+                "description": "Updates the account settings for the authenticated user",
+                "operationId": "updateAccountSettings",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "default_privacy": {
+                                        "type": "string",
+                                        "enum": [
+                                            "private",
+                                            "public"
+                                        ],
+                                        "example": "public",
+                                        "nullable": true
+                                    },
+                                    "avatar": {
+                                        "description": "New avatar image file",
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "enable_watermark": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    },
+                                    "watermark_position": {
+                                        "type": "string",
+                                        "enum": [
+                                            "top-left",
+                                            "top-right",
+                                            "bottom-left",
+                                            "bottom-right"
+                                        ],
+                                        "example": "top-left",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account settings updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account settings updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "default_privacy": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "private",
+                                                        "public"
+                                                    ],
+                                                    "example": "private"
+                                                },
+                                                "avatar_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/avatars/user_1.png",
+                                                    "nullable": true
+                                                },
+                                                "enable_watermark": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "watermark_position": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "top-left",
+                                                        "top-right",
+                                                        "bottom-left",
+                                                        "bottom-right"
+                                                    ],
+                                                    "example": "bottom-right",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/auth/register": {
             "post": {
                 "tags": [
@@ -1735,6 +1925,142 @@
                 ]
             }
         },
+        "/api/v1/recent/files": {
+            "get": {
+                "tags": [
+                    "Recent Activity"
+                ],
+                "summary": "Recently uploaded files",
+                "description": "Retrieves a list of recently uploaded files for the authenticated user",
+                "operationId": "getRecentFiles",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "uploaded_date",
+                            "enum": [
+                                "filename",
+                                "uploaded_date",
+                                "total_downloads",
+                                "filesize",
+                                "last_access_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recent files retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/recent": {
+            "get": {
+                "tags": [
+                    "Recent Activity"
+                ],
+                "summary": "Recent activity (files & folders)",
+                "description": "Retrieves a combined list of recent activity including files and folders for the authenticated user",
+                "operationId": "getRecentActivity",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "uploaded_date",
+                            "enum": [
+                                "filename",
+                                "uploaded_date",
+                                "total_downloads",
+                                "filesize",
+                                "last_access_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recent activity retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/search": {
             "get": {
                 "tags": [
@@ -2530,6 +2856,170 @@
                 ]
             }
         },
+        "/api/v1/folder/stats/{id}": {
+            "get": {
+                "tags": [
+                    "Stats & Analytics"
+                ],
+                "summary": "Folder stats (views, downloads, etc.)",
+                "description": "Retrieves usage statistics for a specific folder",
+                "operationId": "getFolderStats",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the folder",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folder stats retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/file/stats/{id}": {
+            "get": {
+                "tags": [
+                    "Stats & Analytics"
+                ],
+                "summary": "File stats (with timeframe, countries, referrers, browsers, OS)",
+                "description": "Retrieves detailed usage statistics for a specific file, including a timeframe",
+                "operationId": "getFileStats",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "timeframe",
+                        "in": "query",
+                        "description": "Timeframe for stats (last 24h, 7d, 30d, 12mo)",
+                        "schema": {
+                            "type": "string",
+                            "default": "30d",
+                            "enum": [
+                                "24h",
+                                "7d",
+                                "30d",
+                                "12mo"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File stats retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/used-storage": {
+            "get": {
+                "tags": [
+                    "Stats & Analytics"
+                ],
+                "summary": "Get total used storage and other user-level file statistics",
+                "description": "Retrieves total storage space used by the authenticated user, along with file counts and shared file counts.",
+                "operationId": "getUsedStorageAndFileStats",
+                "responses": {
+                    "200": {
+                        "description": "Total used storage and file stats retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Total used storage and file stats retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_files_in_system": {
+                                                    "description": "Total files visible/accessible to the user (owned + shared)",
+                                                    "type": "integer",
+                                                    "example": 500
+                                                },
+                                                "my_files_count": {
+                                                    "description": "Total files owned by the current user",
+                                                    "type": "integer",
+                                                    "example": 300
+                                                },
+                                                "files_shared_with_me_count": {
+                                                    "description": "Total files shared with the current user",
+                                                    "type": "integer",
+                                                    "example": 200
+                                                },
+                                                "used_storage_bytes": {
+                                                    "description": "Total storage used by my files in bytes",
+                                                    "type": "integer",
+                                                    "example": 123456789
+                                                },
+                                                "total_storage_quota_bytes": {
+                                                    "description": "Total available storage quota in bytes (e.g., 5GB)",
+                                                    "type": "integer",
+                                                    "example": 5368709120
+                                                },
+                                                "remaining_storage_bytes": {
+                                                    "description": "Remaining storage quota in bytes",
+                                                    "type": "integer",
+                                                    "example": 4000000000
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/trash": {
             "get": {
                 "tags": [
@@ -3091,7 +3581,8 @@
                 "description": "User model",
                 "required": [
                     "id",
-                    "name",
+                    "firstname",
+                    "lastname",
                     "email",
                     "username",
                     "created_at",
@@ -3104,10 +3595,15 @@
                         "format": "int64",
                         "example": 1
                     },
-                    "name": {
-                        "description": "User name",
+                    "firstname": {
+                        "description": "User's first name",
                         "type": "string",
-                        "example": "Edouard Doe"
+                        "example": "Edouard"
+                    },
+                    "lastname": {
+                        "description": "User's last name",
+                        "type": "string",
+                        "example": "Doe"
                     },
                     "email": {
                         "description": "User email",
@@ -3119,6 +3615,44 @@
                         "description": "username",
                         "type": "string",
                         "example": "edouard"
+                    },
+                    "phone": {
+                        "description": "User phone number",
+                        "type": "string",
+                        "example": "+1234567890",
+                        "nullable": true
+                    },
+                    "avatar": {
+                        "description": "URL to user's avatar image",
+                        "type": "string",
+                        "example": "https://example.com/avatars/edouard.png",
+                        "nullable": true
+                    },
+                    "default_privacy": {
+                        "description": "Default privacy setting for new files/folders",
+                        "type": "string",
+                        "enum": [
+                            "private",
+                            "public"
+                        ],
+                        "example": "private"
+                    },
+                    "enable_watermark": {
+                        "description": "Flag to enable image watermarking by default",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "watermark_position": {
+                        "description": "Default position for image watermark",
+                        "type": "string",
+                        "enum": [
+                            "top-left",
+                            "top-right",
+                            "bottom-left",
+                            "bottom-right"
+                        ],
+                        "example": "bottom-right",
+                        "nullable": true
                     },
                     "email_verified_at": {
                         "description": "Email verification timestamp",
@@ -3159,6 +3693,10 @@
     },
     "tags": [
         {
+            "name": "Account Settings",
+            "description": "Account Settings"
+        },
+        {
             "name": "Authentication",
             "description": "Authentication"
         },
@@ -3175,12 +3713,20 @@
             "description": "Folder Management"
         },
         {
+            "name": "Recent Activity",
+            "description": "Recent Activity"
+        },
+        {
             "name": "Search",
             "description": "Search"
         },
         {
             "name": "Sharing & Links",
             "description": "Sharing & Links"
+        },
+        {
+            "name": "Stats & Analytics",
+            "description": "Stats & Analytics"
         },
         {
             "name": "Trash & Restore",

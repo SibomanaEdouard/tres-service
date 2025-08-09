@@ -5,9 +5,9 @@ use App\Http\Controllers\Api\FolderController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\TrashController;
 use App\Http\Controllers\Api\ShareLinkController;
-// use App\Http\Controllers\Api\RecentActivityController;
-// use App\Http\Controllers\Api\StatsController;
-// use App\Http\Controllers\Api\AccountSettingsController;
+use App\Http\Controllers\Api\RecentActivityController;
+use App\Http\Controllers\Api\StatsController;
+use App\Http\Controllers\Api\AccountSettingsController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\MoveCopyController;
 use App\Http\Controllers\PublicShareController; 
@@ -62,17 +62,19 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     });
 
     // Recent Activity Endpoints
-    // Route::prefix('recent')->controller(RecentActivityController::class)->group(function () {
-    //     Route::get('files', 'recentFiles'); // Recently uploaded files
-    //     Route::get('/', 'recentActivity'); // Recent activity (files & folders)
-    // });
+    Route::prefix('recent')->controller(RecentActivityController::class)->group(function () {
+        Route::get('files', 'recentFiles'); // Recently uploaded files
+        Route::get('/', 'recentActivity'); // Recent activity (files & folders)
+    });
 
     // Stats & Analytics Endpoints
-    // Route::prefix('stats')->controller(StatsController::class)->group(function () {
-    //     Route::get('folder/{id}', 'folderStats'); // Folder stats (views, downloads, etc.)
-    //     Route::get('file/{id}', 'fileStats'); // File stats (with timeframe, countries, etc.)
-    //     Route::get('used-storage', 'usedStorage'); // Get total used storage
-    // });
+    Route::prefix('stats')->controller(StatsController::class)->group(function () {
+        Route::get('folder/{id}', 'folderStats'); // Folder stats (views, downloads, etc.)
+        Route::get('file/{id}', 'fileStats'); // File stats (with timeframe, countries, etc.)
+        // Route::get('used-storage', 'usedStorage'); // Get total used storage
+    });
+       // Moved used-storage here to be directly under v1
+    Route::get('used-storage', [StatsController::class, 'usedStorage']);
 
     // Sharing & Links Endpoints
     Route::prefix('link')->controller(ShareLinkController::class)->group(function () {
@@ -103,11 +105,11 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     // Copy file/folder
     Route::post('copy', [MoveCopyController::class, 'copy']); // Duplicate file(s) or folder(s)
 
-    // // Account Settings Endpoints
-    // Route::prefix('account/settings')->controller(AccountSettingsController::class)->group(function () {
-    //     Route::get('/', 'index'); // Get current account settings
-    //     Route::patch('/', 'update'); // Update account settings
-    // });
+    // Account Settings Endpoints
+    Route::prefix('account/settings')->controller(AccountSettingsController::class)->group(function () {
+        Route::get('/', 'index'); // Get current account settings
+        Route::patch('/', 'update'); // Update account settings
+    });
 });
 
 // Public Share Link Access (no authentication required)
