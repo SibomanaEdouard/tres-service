@@ -540,10 +540,2258 @@
                     }
                 ]
             }
+        },
+        "/api/v1/file/{id}": {
+            "get": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Get file details",
+                "description": "Retrieves metadata and details for a specific file",
+                "operationId": "getFileDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/File"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Delete a file (move to trash)",
+                "description": "Moves a single file to the trash using soft delete",
+                "operationId": "deleteSingleFile",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File moved to trash successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File moved to trash successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Update file metadata",
+                "description": "Updates the name and/or description of a specific file",
+                "operationId": "updateFileMetadata",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Document.pdf",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Revised description.",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "File metadata updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File metadata updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/File"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/file": {
+            "delete": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Delete multiple files (move to trash)",
+                "description": "Moves multiple files to the trash using soft delete",
+                "operationId": "deleteMultipleFiles",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "file_ids"
+                                ],
+                                "properties": {
+                                    "file_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Files moved to trash successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Files moved to trash successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "One or more files not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/file/download/{id}": {
+            "get": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Download a single file",
+                "description": "Downloads a specific file",
+                "operationId": "downloadSingleFile",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File downloaded successfully",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/file/download": {
+            "post": {
+                "tags": [
+                    "File Management"
+                ],
+                "summary": "Download multiple files as ZIP",
+                "description": "Downloads multiple files as a single ZIP archive",
+                "operationId": "downloadMultipleFilesAsZip",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "file_ids"
+                                ],
+                                "properties": {
+                                    "file_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ZIP archive downloaded successfully",
+                        "content": {
+                            "application/zip": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "One or more files not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/folder/new": {
+            "post": {
+                "tags": [
+                    "Folder Management"
+                ],
+                "summary": "Create a new folder",
+                "description": "Creates a new folder for the authenticated user",
+                "operationId": "createFolder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "parent_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New Project Folder"
+                                    },
+                                    "privacy": {
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "private"
+                                        ],
+                                        "example": "private"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "securepass123",
+                                        "nullable": true
+                                    },
+                                    "allow_download": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "watermark_images": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Folder created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Folder"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/folder/upload": {
+            "post": {
+                "tags": [
+                    "Folder Management"
+                ],
+                "summary": "Upload files into a folder",
+                "description": "Uploads one or more files to a specified folder",
+                "operationId": "uploadFilesInFolder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "folder_id",
+                                    "files"
+                                ],
+                                "properties": {
+                                    "folder_id": {
+                                        "description": "ID of the target folder",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "files[]": {
+                                        "description": "Array of files to upload",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Files uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Files uploaded successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/File"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/folder/{id}": {
+            "get": {
+                "tags": [
+                    "Folder Management"
+                ],
+                "summary": "Get folder details & list files/subfolders",
+                "description": "Retrieves details of a specific folder and its contents (files and subfolders)",
+                "operationId": "getFolderDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the folder",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folder details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "folder": {
+                                                    "$ref": "#/components/schemas/Folder"
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/File"
+                                                    }
+                                                },
+                                                "subfolders": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Folder"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Folder Management"
+                ],
+                "summary": "Delete folder (move to trash)",
+                "description": "Moves a folder and its contents to the trash using soft delete",
+                "operationId": "deleteFolder",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the folder",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folder moved to trash successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder moved to trash successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Folder Management"
+                ],
+                "summary": "Update folder info",
+                "description": "Updates properties of a specific folder",
+                "operationId": "updateFolder",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the folder",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Renamed Folder",
+                                        "nullable": true
+                                    },
+                                    "privacy": {
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "private"
+                                        ],
+                                        "example": "public",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpass123",
+                                        "nullable": true
+                                    },
+                                    "allow_download": {
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "watermark_images": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Folder updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Folder"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/move": {
+            "post": {
+                "tags": [
+                    "File Listing & Pagination"
+                ],
+                "summary": "Move file(s) or folder(s)",
+                "description": "Moves one or more files or folders to a specified destination folder",
+                "operationId": "moveItems",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "destination_folder_id"
+                                ],
+                                "properties": {
+                                    "file_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "folder_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            10,
+                                            11
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "destination_folder_id": {
+                                        "description": "ID of the destination folder",
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Items moved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Destination folder or one or more items not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/copy": {
+            "post": {
+                "tags": [
+                    "File Listing & Pagination"
+                ],
+                "summary": "Duplicate file(s) or folder(s)",
+                "description": "Duplicates one or more files or folders to a specified destination folder",
+                "operationId": "copyItems",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "destination_folder_id"
+                                ],
+                                "properties": {
+                                    "file_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "folder_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            10,
+                                            11
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "destination_folder_id": {
+                                        "description": "ID of the destination folder",
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Items copied successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Destination folder or one or more items not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/search": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search files/folders by name/description",
+                "description": "Searches for files or folders based on a keyword and type (file or folder)",
+                "operationId": "searchFilesFolders",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Search keyword",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of item to search (file|folder)",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "file",
+                                "folder"
+                            ],
+                            "nullable": true
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "name",
+                                "created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/link/file/{id}": {
+            "get": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Get file link details",
+                "description": "Retrieves details of a specific share link for a file",
+                "operationId": "getFileLinkDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File link details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File link details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Create share link for a file",
+                "description": "Creates a new share link for a specific file",
+                "operationId": "createFileShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "internal",
+                                            "email",
+                                            "public"
+                                        ],
+                                        "example": "public"
+                                    },
+                                    "recipient_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "share@example.com",
+                                        "nullable": true
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-08-09T12:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "linkpass",
+                                        "nullable": true
+                                    },
+                                    "permissions": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view",
+                                            "upload-download-view"
+                                        ],
+                                        "example": "view"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Share link created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Share link created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Delete file share link",
+                "description": "Deletes an existing share link for a file",
+                "operationId": "deleteFileShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File share link deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File share link deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Update file share link settings",
+                "description": "Updates settings of an existing share link for a file",
+                "operationId": "updateFileShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "internal",
+                                            "email",
+                                            "public"
+                                        ],
+                                        "example": "internal",
+                                        "nullable": true
+                                    },
+                                    "recipient_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "new_recipient@example.com",
+                                        "nullable": true
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2027-08-09T12:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newlinkpass",
+                                        "nullable": true
+                                    },
+                                    "permissions": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view",
+                                            "upload-download-view"
+                                        ],
+                                        "example": "upload-download-view",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "File share link updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File share link updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/link/folder/{id}": {
+            "get": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Get folder link details",
+                "description": "Retrieves details of a specific share link for a folder",
+                "operationId": "getFolderLinkDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folder link details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder link details retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Create share link for a folder",
+                "description": "Creates a new share link for a specific folder",
+                "operationId": "createFolderShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the folder",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "internal",
+                                            "email",
+                                            "public"
+                                        ],
+                                        "example": "public"
+                                    },
+                                    "recipient_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "share@example.com",
+                                        "nullable": true
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-08-09T12:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "linkpass",
+                                        "nullable": true
+                                    },
+                                    "permissions": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view",
+                                            "upload-download-view"
+                                        ],
+                                        "example": "view"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Share link created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Share link created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Folder not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Delete folder share link",
+                "description": "Deletes an existing share link for a folder",
+                "operationId": "deleteFolderShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folder share link deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder share link deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Update folder share link settings",
+                "description": "Updates settings of an existing share link for a folder",
+                "operationId": "updateFolderShareLink",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the share link",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "internal",
+                                            "email",
+                                            "public"
+                                        ],
+                                        "example": "internal",
+                                        "nullable": true
+                                    },
+                                    "recipient_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "new_recipient@example.com",
+                                        "nullable": true
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2027-08-09T12:00:00Z",
+                                        "nullable": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newlinkpass",
+                                        "nullable": true
+                                    },
+                                    "permissions": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view",
+                                            "upload-download-view"
+                                        ],
+                                        "example": "upload-download-view",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Folder share link updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folder share link updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ShareLink"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Share link not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/shared-with-me": {
+            "get": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Get folders & files shared with the current user",
+                "description": "Retrieves a list of files and folders shared with the authenticated user (via email share or internal share)",
+                "operationId": "getSharedWithMe",
+                "responses": {
+                    "200": {
+                        "description": "Shared items retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Shared items retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "shared_files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/File"
+                                                    }
+                                                },
+                                                "shared_folders": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Folder"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trash": {
+            "get": {
+                "tags": [
+                    "Trash & Restore"
+                ],
+                "summary": "List all trashed files & folders",
+                "description": "Retrieves a list of all soft-deleted files and folders for the authenticated user",
+                "operationId": "listTrash",
+                "responses": {
+                    "200": {
+                        "description": "Trashed items retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trashed items retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/File"
+                                                    }
+                                                },
+                                                "folders": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Folder"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trash/restore": {
+            "post": {
+                "tags": [
+                    "Trash & Restore"
+                ],
+                "summary": "Restore a file or folder from trash",
+                "description": "Restores one or more files or folders from the trash. If restoring a folder, its contents are also restored.",
+                "operationId": "restoreTrashItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "file_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "folder_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ],
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Selected items restored successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Selected items restored successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "One or more items not found in trash"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trash/file/{id}": {
+            "delete": {
+                "tags": [
+                    "Trash & Restore"
+                ],
+                "summary": "Permanently delete single file from trash",
+                "description": "Permanently deletes a single file that is currently in the trash",
+                "operationId": "permanentlyDeleteFile",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the file in trash",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File permanently deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File permanently deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "File not found in trash"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trash/file/all": {
+            "delete": {
+                "tags": [
+                    "Trash & Restore"
+                ],
+                "summary": "Empty trash (all files/folders)",
+                "description": "Permanently deletes all files and folders in the trash for the authenticated user",
+                "operationId": "emptyTrash",
+                "responses": {
+                    "200": {
+                        "description": "Trash emptied successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Trash emptied successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/share/{link}": {
+            "get": {
+                "tags": [
+                    "Sharing & Links"
+                ],
+                "summary": "Access public share link",
+                "description": "Accesses content shared via a public link. Requires password if protected.",
+                "operationId": "accessPublicShareLink",
+                "parameters": [
+                    {
+                        "name": "link",
+                        "in": "path",
+                        "description": "Unique share link string",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "linkpass",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Content retrieved successfully",
+                        "content": {
+                            "application/octet-stream": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid password or link expired"
+                    },
+                    "404": {
+                        "description": "Link not found"
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "File": {
+                "title": "File",
+                "description": "File model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "folder_id",
+                    "name",
+                    "file_path",
+                    "file_type",
+                    "file_size",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "File ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Owner User ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "folder_id": {
+                        "description": "Parent Folder ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "File name",
+                        "type": "string",
+                        "example": "document.pdf"
+                    },
+                    "description": {
+                        "description": "File description",
+                        "type": "string",
+                        "example": "A brief summary of the document.",
+                        "nullable": true
+                    },
+                    "file_path": {
+                        "description": "Internal path to the file storage",
+                        "type": "string",
+                        "example": "files/user_1/folder_1/document.pdf"
+                    },
+                    "file_type": {
+                        "description": "MIME type of the file",
+                        "type": "string",
+                        "example": "application/pdf"
+                    },
+                    "file_size": {
+                        "description": "File size in bytes",
+                        "type": "integer",
+                        "example": 1024000
+                    },
+                    "total_downloads": {
+                        "description": "Total number of times the file has been downloaded",
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "last_access_date": {
+                        "description": "Last access timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T14:30:00Z",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    },
+                    "deleted_at": {
+                        "description": "Deletion timestamp (for soft delete)",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Folder": {
+                "title": "Folder",
+                "description": "Folder model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "name",
+                    "privacy",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Folder ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Owner User ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "parent_id": {
+                        "description": "Parent folder ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "name": {
+                        "description": "Folder name",
+                        "type": "string",
+                        "example": "My Documents"
+                    },
+                    "privacy": {
+                        "description": "Folder privacy",
+                        "type": "string",
+                        "enum": [
+                            "public",
+                            "private"
+                        ],
+                        "example": "private"
+                    },
+                    "password_protected": {
+                        "description": "Is folder password protected?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "allow_download": {
+                        "description": "Allow download from this folder",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "watermark_images": {
+                        "description": "Watermark images in this folder",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    },
+                    "deleted_at": {
+                        "description": "Deletion timestamp (for soft delete)",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ShareLink": {
+                "title": "ShareLink",
+                "description": "Share link model for files and folders",
+                "required": [
+                    "id",
+                    "user_id",
+                    "shareable_type",
+                    "shareable_id",
+                    "type",
+                    "link",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Share Link ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Creator User ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "shareable_type": {
+                        "description": "Type of shared item (e.g., App\\\\Models\\\\File, App\\\\Models\\\\Folder)",
+                        "type": "string",
+                        "example": "App\\\\Models\\\\File"
+                    },
+                    "shareable_id": {
+                        "description": "ID of the shared item",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "type": {
+                        "description": "Type of share link",
+                        "type": "string",
+                        "enum": [
+                            "internal",
+                            "email",
+                            "public"
+                        ],
+                        "example": "public"
+                    },
+                    "link": {
+                        "description": "Generated share URL",
+                        "type": "string",
+                        "example": "https://example.com/share/abcdef123"
+                    },
+                    "recipient_email": {
+                        "description": "Recipient email for email share",
+                        "type": "string",
+                        "format": "email",
+                        "example": "recipient@example.com",
+                        "nullable": true
+                    },
+                    "expires_at": {
+                        "description": "Expiry date of the link",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-09T12:00:00Z",
+                        "nullable": true
+                    },
+                    "password_protected": {
+                        "description": "Is link password protected?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "permissions": {
+                        "description": "Permissions for the link",
+                        "type": "string",
+                        "enum": [
+                            "view",
+                            "upload-download-view"
+                        ],
+                        "example": "view"
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-08-09T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "title": "User",
                 "description": "User model",
@@ -619,6 +2867,30 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "File Management",
+            "description": "File Management"
+        },
+        {
+            "name": "Folder Management",
+            "description": "Folder Management"
+        },
+        {
+            "name": "File Listing & Pagination",
+            "description": "File Listing & Pagination"
+        },
+        {
+            "name": "Search",
+            "description": "Search"
+        },
+        {
+            "name": "Sharing & Links",
+            "description": "Sharing & Links"
+        },
+        {
+            "name": "Trash & Restore",
+            "description": "Trash & Restore"
         }
     ],
     "security": [
