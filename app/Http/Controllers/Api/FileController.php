@@ -11,6 +11,111 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends BaseController
 {
+
+
+     /**
+     * @OA\Get(
+     * path="/api/v1/all-files",
+     * summary="List all files with pagination",
+     * description="Retrieves a paginated and sortable list of all files for the authenticated user, with optional search.",
+     * operationId="getAllFiles",
+     * tags={"File Listing & Pagination"},
+     * security={{"bearerAuth":{}}},
+     * @OA\Parameter(name="page", in="query", @OA\Schema(type="integer", default=1), description="Page number"),
+     * @OA\Parameter(name="limit", in="query", @OA\Schema(type="integer", default=20), description="Items per page"),
+     * @OA\Parameter(name="sort_by", in="query", @OA\Schema(type="string", default="uploaded_date", enum={"filename", "uploaded_date", "total_downloads", "filesize", "last_access_date"}), description="Field to sort results by"),
+     * @OA\Parameter(name="order", in="query", @OA\Schema(type="string", default="desc", enum={"asc", "desc"}), description="Sort order: asc or desc"),
+     * @OA\Parameter(name="search", in="query", @OA\Schema(type="string"), description="Search by filename or description"),
+     * @OA\Parameter(name="folder_id", in="query", @OA\Schema(type="integer"), description="Limit results to a specific folder ID"),
+     * @OA\Response(
+     * response=200,
+     * description="Files retrieved successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="success", type="boolean", example=true),
+     * @OA\Property(property="message", type="string", example="Files retrieved successfully"),
+     * @OA\Property(
+     * property="data",
+     * type="array",
+     * @OA\Items(ref="#/components/schemas/File")
+     * ),
+     * @OA\Property(property="pagination", type="object",
+     * @OA\Property(property="total_items", type="integer", example=100),
+     * @OA\Property(property="total_pages", type="integer", example=10),
+     * @OA\Property(property="current_page", type="integer", example=1),
+     * @OA\Property(property="limit", type="integer", example=10)
+     * ),
+     * @OA\Property(property="sort", type="object",
+     * @OA\Property(property="by", type="string", example="uploaded_date"),
+     * @OA\Property(property="order", type="string", example="desc")
+     * )
+     * )
+     * ),
+     * @OA\Response(response=401, description="Unauthenticated"),
+     * @OA\Response(response=422, description="Validation Error")
+     * )
+     */
+    public function allFiles(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'page' => 'nullable|integer|min:1',
+            'limit' => 'nullable|integer|min:1|max:100',
+            'sort_by' => 'nullable|string|in:name,created_at,total_downloads,file_size,last_access_date',
+            'order' => 'nullable|string|in:asc,desc',
+            'search' => 'nullable|string',
+            'folder_id' => 'nullable|integer|exists:folders,id',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendValidationError($validator->errors());
+        }
+
+        $user = auth('api')->user();
+        $query = File::where('user_id', $user->id);
+
+        // Apply folder filter
+        if ($request->has('folder_id')) {
+            $query->where('folder_id', $request->input('folder_id'));
+        }
+
+        // Apply search filter
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Apply sorting
+        $sortBy = $request->input('sort_by', 'created_at'); // Default to created_at for uploaded_date
+        $order = $request->input('order', 'desc');
+
+        // Map sort_by parameter to actual database columns
+        $columnMap = [
+            'filename' => 'name',
+            'uploaded_date' => 'created_at',
+            'total_downloads' => 'total_downloads',
+            'filesize' => 'file_size',
+            'last_access_date' => 'last_access_date',
+        ];
+        $actualSortColumn = $columnMap[$sortBy] ?? 'created_at';
+
+        $files = $query->orderBy($actualSortColumn, $order)
+                       ->paginate($request->input('limit', 20));
+
+        return $this->sendResponse($files->items(), 'Files retrieved successfully', 200, [
+            'pagination' => [
+                'total_items' => $files->total(),
+                'total_pages' => $files->lastPage(),
+                'current_page' => $files->currentPage(),
+                'limit' => $files->perPage(),
+            ],
+            'sort' => [
+                'by' => $sortBy,
+                'order' => $order,
+            ]
+        ]);
+    }
     /**
      * @OA\Get(
      * path="/api/v1/file/{id}",

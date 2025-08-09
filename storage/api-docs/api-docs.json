@@ -541,6 +541,154 @@
                 ]
             }
         },
+        "/api/v1/all-files": {
+            "get": {
+                "tags": [
+                    "File Listing & Pagination"
+                ],
+                "summary": "List all files with pagination",
+                "description": "Retrieves a paginated and sortable list of all files for the authenticated user, with optional search.",
+                "operationId": "getAllFiles",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Field to sort results by",
+                        "schema": {
+                            "type": "string",
+                            "default": "uploaded_date",
+                            "enum": [
+                                "filename",
+                                "uploaded_date",
+                                "total_downloads",
+                                "filesize",
+                                "last_access_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort order: asc or desc",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by filename or description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "folder_id",
+                        "in": "query",
+                        "description": "Limit results to a specific folder ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Files retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Files retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/File"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total_items": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "total_pages": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "limit": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "sort": {
+                                            "properties": {
+                                                "by": {
+                                                    "type": "string",
+                                                    "example": "uploaded_date"
+                                                },
+                                                "order": {
+                                                    "type": "string",
+                                                    "example": "desc"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/file/{id}": {
             "get": {
                 "tags": [
@@ -888,6 +1036,152 @@
                     },
                     "404": {
                         "description": "One or more files not found"
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/all-folders": {
+            "get": {
+                "tags": [
+                    "File Listing & Pagination"
+                ],
+                "summary": "List all folders with pagination",
+                "description": "Retrieves a paginated and sortable list of all folders for the authenticated user, with optional search.",
+                "operationId": "getAllFolders",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Field to sort results by",
+                        "schema": {
+                            "type": "string",
+                            "default": "uploaded_date",
+                            "enum": [
+                                "filename",
+                                "uploaded_date"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort order: asc or desc",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by folder name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "description": "Limit results to a specific parent folder ID (root if null)",
+                        "schema": {
+                            "type": "integer",
+                            "nullable": true
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Folders retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Folders retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Folder"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total_items": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "total_pages": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "limit": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "sort": {
+                                            "properties": {
+                                                "by": {
+                                                    "type": "string",
+                                                    "example": "uploaded_date"
+                                                },
+                                                "order": {
+                                                    "type": "string",
+                                                    "example": "desc"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     },
                     "422": {
                         "description": "Validation Error"
@@ -2869,16 +3163,16 @@
             "description": "Authentication"
         },
         {
+            "name": "File Listing & Pagination",
+            "description": "File Listing & Pagination"
+        },
+        {
             "name": "File Management",
             "description": "File Management"
         },
         {
             "name": "Folder Management",
             "description": "Folder Management"
-        },
-        {
-            "name": "File Listing & Pagination",
-            "description": "File Listing & Pagination"
         },
         {
             "name": "Search",

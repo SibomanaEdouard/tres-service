@@ -90,6 +90,9 @@ Route::prefix('v1')->middleware('auth:api')->group(function () {
     // File Listing & Pagination (moved all-files to FileController, will need implementation)
     // Removed duplicate all-files as it is covered under file listing.
     Route::get('all-folders', [FolderController::class, 'allFolders']); // List all folders with pagination, sorting, search
+        // Global File/Folder Listing with Pagination, Sorting, Search
+    Route::get('all-files', [FileController::class, 'allFiles']); // List all files
+    // Route::get('all-folders', [FolderController::class, 'allFolders']); // List all folders
 
     // Search
     Route::get('search', [SearchController::class, 'search']); // Search files/folders by name/description
